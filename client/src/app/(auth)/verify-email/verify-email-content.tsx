@@ -20,7 +20,8 @@ import { ResendVerificationButton } from "./resend-verification-button";
 export function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
-  const verify = useVerifyEmail();
+  const { mutate, isPending, isSuccess, isError, error, status } =
+    useVerifyEmail();
   const user = useAuthStore((state) => state.user);
   const userEmail = user?.email;
   const router = useRouter();
@@ -28,16 +29,16 @@ export function VerifyEmailContent() {
   // 🔁 Trigger verification when token is present
   useEffect(() => {
     if (token) {
-      verify.mutate(token);
+      mutate(token);
     }
-  }, [token]);
+  }, [token, mutate]);
 
   // Redirect if no token and no user
   useEffect(() => {
     if (!token && !userEmail) {
       router.push(ROUTES.SIGN_IN);
     }
-  }, [token, userEmail]);
+  }, [token, userEmail, router]);
 
   // ----- Case: No token (post-signup page) -----
   if (!token) {
@@ -68,18 +69,18 @@ export function VerifyEmailContent() {
 
   // ----- Case: Token present (verification flow) -----
   // Show loading while pending or idle (first render)
-  if (verify.isPending || verify.status === "idle") {
+  if (isPending || status === "idle") {
     return <LoadingFallback color="text-brand" />;
   }
 
-  if (verify.isSuccess) {
+  if (isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
         <Card className="max-w-sm w-full mx-auto">
           <CardHeader>
-            <h2 className="text-xl font-bold text-green-600 dark:text-green-400">
+            <p className="font-bold text-xl text-green-600 dark:text-green-400">
               ✅ Email Verified
-            </h2>
+            </p>
           </CardHeader>
           <CardContent>
             <p className="text-center">
@@ -92,24 +93,26 @@ export function VerifyEmailContent() {
     );
   }
 
-  if (verify.isError) {
+  if (isError) {
     if (!userEmail) return null;
 
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-sm w-full">
+      <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
+        <Card className="max-w-sm w-full mx-auto">
           <CardHeader>
-            <h2 className="text-xl font-bold text-red-600 dark:text-red-400">
+            <p className="font-bold text-xl text-red-600 dark:text-red-400">
               ❌ Email verification Failed
-            </h2>
+            </p>
           </CardHeader>
           <CardContent>
-            <p className="mb-4">
-              {verify.error?.message || "Invalid or expired token"}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              You can request a new verification link by clicking below.
-            </p>
+            <div className="flex flex-col items-center justify-center space-y-2">
+              <p className="mb-4">
+                {error?.message || "Invalid or expired token"}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                You can request a new verification link by clicking below.
+              </p>
+            </div>
           </CardContent>
           <CardFooter>
             <div className="w-full">
