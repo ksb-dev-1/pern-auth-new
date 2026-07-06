@@ -2,10 +2,9 @@
 
 import { useEffect } from "react";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { LoadingFallback } from "@/components/loading-fallback";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -24,6 +23,7 @@ export function VerifyEmailContent() {
   const verify = useVerifyEmail();
   const user = useAuthStore((state) => state.user);
   const userEmail = user?.email;
+  const router = useRouter();
 
   // 🔁 Trigger verification when token is present
   useEffect(() => {
@@ -35,13 +35,14 @@ export function VerifyEmailContent() {
   // Redirect if no token and no user
   useEffect(() => {
     if (!token && !userEmail) {
-      window.location.href = ROUTES.SIGN_IN;
+      router.push(ROUTES.SIGN_IN);
     }
   }, [token, userEmail]);
 
   // ----- Case: No token (post-signup page) -----
   if (!token) {
     if (!userEmail) return null; // will redirect
+
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
         <Card className="max-w-sm w-full mx-auto">
@@ -81,8 +82,8 @@ export function VerifyEmailContent() {
             </h2>
           </CardHeader>
           <CardContent>
-            <p>
-              Your email has been confirmed. You will be redirected to sign in
+            <p className="text-center">
+              Your email has been verified. You will be redirected to sign in
               shortly.
             </p>
           </CardContent>
@@ -92,12 +93,14 @@ export function VerifyEmailContent() {
   }
 
   if (verify.isError) {
+    if (!userEmail) return null;
+
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Card className="max-w-sm w-full">
           <CardHeader>
             <h2 className="text-xl font-bold text-red-600 dark:text-red-400">
-              ❌ Verification Failed
+              ❌ Email verification Failed
             </h2>
           </CardHeader>
           <CardContent>
@@ -105,16 +108,13 @@ export function VerifyEmailContent() {
               {verify.error?.message || "Invalid or expired token"}
             </p>
             <p className="text-sm text-muted-foreground">
-              You can request a new verification link from the signin page.
+              You can request a new verification link by clicking below.
             </p>
           </CardContent>
           <CardFooter>
-            <Button
-              className="w-full"
-              onClick={() => (window.location.href = ROUTES.SIGN_IN)}
-            >
-              Go to Sign In
-            </Button>
+            <div className="w-full">
+              <ResendVerificationButton email={userEmail} />
+            </div>
           </CardFooter>
         </Card>
       </div>

@@ -97,7 +97,7 @@ export function ForgotPasswordForm() {
         <CardFooter>
           <CustomLink
             href={ROUTES.SIGN_IN}
-            className="text-brand font-medium underline flex items-center justify-center gap-2"
+            className="text-brand underline flex items-center justify-center gap-2"
           >
             <MoveLeft size={12} /> Bcak to Sign in
           </CustomLink>
