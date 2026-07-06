@@ -38,8 +38,11 @@ export function useSignup() {
       }
       return json;
     },
-    onSuccess: (data, variables) => {
-      setUser({ email: variables.email });
+    onSuccess: (_data, variables) => {
+      setUser({
+        name: variables.name || null,
+        email: variables.email,
+      });
       toast.success("Account created! Please verify your email.");
       router.push("/verify-email");
     },
@@ -98,6 +101,41 @@ export function useResendVerification() {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Could not resend verification email");
+    },
+  });
+}
+
+export function useSignin() {
+  const router = useRouter();
+  const setAuth = useAuthStore((state) => state.setAuth);
+
+  return useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      const res = await fetch(`${API_BASE}/auth/signin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: "include", // sends refresh cookie
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json?.error || "Signin failed");
+      }
+      return json as {
+        accessToken: string;
+        user: { id: string; email: string; name?: string };
+      };
+    },
+    onSuccess: (data) => {
+      // Store token & user in Zustand (persisted to sessionStorage)
+      setAuth(data.accessToken, data.user);
+      toast.success("Welcome back!");
+      router.push(ROUTES.HOME); // change to your desired route
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Invalid email or password");
     },
   });
 }

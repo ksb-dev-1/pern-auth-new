@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { ROUTES } from "@/constants/routes";
+import { useSignin } from "@/hooks/useAuth";
 import { SignInType, signInSchema } from "@/lib/validation";
 
 export function SignInForm() {
@@ -41,6 +42,7 @@ export function SignInForm() {
     "google" | "github" | null
   >(null);
   const router = useRouter();
+  const signin = useSignin();
 
   const form = useForm<SignInType>({
     resolver: zodResolver(signInSchema),
@@ -55,11 +57,24 @@ export function SignInForm() {
     form.reset(form.formState.defaultValues);
   }, [form]);
 
-  async function onSubmit({ email, password, rememberMe }: SignInType) {}
+  async function onSubmit({ email, password, rememberMe }: SignInType) {
+    setErrorMessage(null);
+    try {
+      await signin.mutateAsync({ email, password });
+      // Note: rememberMe is handled by sessionStorage duration (we already persist via Zustand)
+      // If rememberMe is true, we could adjust the persist config later, but sessionStorage is cleared on browser close.
+      // For now, we just use the existing behavior.
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Signin failed");
+    }
+  }
 
-  async function handleSocialSignIn(provider: "github" | "google") {}
+  async function handleSocialSignIn(provider: "github" | "google") {
+    // Placeholder – implement OAuth later
+    toast.info(`${provider} signin coming soon`);
+  }
 
-  const loading = form.formState.isSubmitting;
+  const loading = signin.isPending;
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
@@ -94,7 +109,6 @@ export function SignInForm() {
                       placeholder="your@email.com"
                       autoComplete="off"
                     />
-
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

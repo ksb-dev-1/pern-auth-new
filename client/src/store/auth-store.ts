@@ -2,10 +2,11 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 interface User {
+  id?: string; // optional for signup, but will be set after signin
   email: string;
-  // add other fields as needed later
+  name?: string | null; // optional for signup
+  imageUrl?: string | null;
 }
-
 interface AuthState {
   accessToken: string | null;
   user: User | null;
