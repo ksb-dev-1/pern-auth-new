@@ -51,7 +51,6 @@ export default function RootLayout({
         </Suspense>
         <Providers>
           <main>{children}</main>
-          {/* <SpeedInsights /> */}
         </Providers>
       </body>
     </html>

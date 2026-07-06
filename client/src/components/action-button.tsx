@@ -18,7 +18,7 @@ export function ActionButton({
 }: ActionButtonProps) {
   return (
     <Button
-      asChild
+      type="submit"
       variant="brand"
       disabled={loading || disabled}
       aria-busy={loading}

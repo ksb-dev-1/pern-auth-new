@@ -9,6 +9,7 @@ import { ActionButton } from "@/components/action-button";
 import { CustomLink } from "@/components/custom-link";
 import { PasswordField } from "@/components/shared/password-field";
 import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -49,6 +50,7 @@ export function SignUpForm() {
 
   async function onSubmit({ email, password, name }: SignUpType) {
     setError(null);
+
     try {
       await signup.mutateAsync({ email, password, name });
     } catch (error) {
@@ -78,7 +80,13 @@ export function SignUpForm() {
             </Alert>
           )}
 
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            //onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={(e) => {
+              console.log("🔵 Form onSubmit event triggered");
+              form.handleSubmit(onSubmit)(e);
+            }}
+          >
             <FieldGroup>
               <Controller
                 name="name"
