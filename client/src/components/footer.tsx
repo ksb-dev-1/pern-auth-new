@@ -1,0 +1,51 @@
+"use client";
+
+import { Suspense } from "react";
+
+import { FaGithub } from "react-icons/fa";
+
+function FooterContent() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="border-t bg-background h-16">
+      <div className="w-full mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between">
+        <p className="text-center sm:text-left text-sm text-muted-foreground">
+          © {currentYear} Careerly. All rights reserved.
+        </p>
+
+        <div className="flex items-center gap-3 mt-4 sm:mt-0">
+          <a
+            href="mailto:babaleshwarkedar@gmail.com"
+            className="text-muted-foreground hover:text-brand dark:hover:text-brand transition-colors text-sm"
+            aria-label="Email kedar babaleshwar"
+            title="Send email to kedar babaleshwar"
+          >
+            babaleshwarkedar@gmail.com
+          </a>
+
+          <span className="inline-block h-6 border-r-2" aria-hidden="true" />
+
+          <a
+            href="https://github.com/ksb-dev-1"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit GitHub profile"
+            title="GitHub - ksb-dev-1"
+            className="text-muted-foreground hover:text-brand dark:hover:text-brand transition-colors"
+          >
+            <FaGithub className="h-5 w-5" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export function Footer() {
+  return (
+    <Suspense>
+      <FooterContent />
+    </Suspense>
+  );
+}
