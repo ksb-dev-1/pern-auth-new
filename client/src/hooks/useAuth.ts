@@ -139,3 +139,40 @@ export function useSignin() {
     },
   });
 }
+
+export function useSignout() {
+  const router = useRouter();
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  return useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`${API_BASE}/auth/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`, // 👈 required
+        },
+        credentials: "include", // sends refresh token cookie
+      });
+
+      if (!res.ok) {
+        const json = await res.json();
+        throw new Error(json?.error || "Logout failed");
+      }
+
+      return await res.json();
+    },
+    onSuccess: () => {
+      clearAuth();
+      toast.success("Logged out successfully");
+      router.push(ROUTES.SIGN_IN);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to sign out");
+      // Still clear local auth even if server fails (e.g., token expired)
+      clearAuth();
+      router.push(ROUTES.SIGN_IN);
+    },
+  });
+}

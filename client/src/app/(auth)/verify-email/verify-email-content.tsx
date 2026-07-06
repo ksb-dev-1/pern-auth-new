@@ -75,9 +75,9 @@ export function VerifyEmailContent() {
   if (verify.isSuccess) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-sm w-full">
+        <Card className="max-w-sm w-full mx-auto">
           <CardHeader>
-            <h2 className="text-xl font-bold text-green-600">
+            <h2 className="text-xl font-bold text-green-600 dark:text-green-400">
               ✅ Email Verified
             </h2>
           </CardHeader>

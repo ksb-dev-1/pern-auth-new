@@ -1,12 +1,13 @@
-"use client"
+"use client";
 
-import {ModeToggle} from "@/components/navbar/mode-toggle";
-import {ProfileDropdownMenu} from "@/components/navbar/profile-dropdown"
+import { ModeToggle } from "@/components/navbar/mode-toggle";
+import { ProfileDropdownMenu } from "@/components/navbar/profile-dropdown";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ROUTES } from "@/constants/routes";
-import { CustomLink } from "../custom-link";
+import { useAuthStore } from "@/store/auth-store";
 
+import { CustomLink } from "../custom-link";
 
 function NavbarLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -40,22 +41,23 @@ function Loading() {
   return <Skeleton className="h-9 w-9 rounded-full" />;
 }
 
-export  function Navbar() {
-    const session = {user:{
-        id:"",
-        image:""
-    }}
-    const isPending = false
+export function Navbar() {
+  const user = useAuthStore((state) => state.user);
+  const accessToken = useAuthStore((state) => state.accessToken);
 
+  // Derive authentication status from store
+  const isAuthenticated = !!accessToken && !!user;
+  const isLoading = false; // Zustand doesn't have a loading state by default
 
   let content;
 
-  if (isPending) {
+  if (isLoading) {
     content = <Loading />;
-  } else if (session?.user?.id) {
-    content = <SignedIn imageUrl={session.user.image} />;
+  } else if (isAuthenticated) {
+    content = <SignedIn imageUrl={user?.imageUrl} />;
   } else {
     content = <NotSignedIn />;
   }
+
   return <NavbarLayout>{content}</NavbarLayout>;
 }
