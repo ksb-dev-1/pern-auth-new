@@ -13,8 +13,8 @@ function NavbarLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="border-b h-16 w-full flex items-center justify-center">
       <nav className="flex items-center justify-between max-w-5xl w-full mx-auto px-4">
-        <CustomLink href={ROUTES.HOME} className="font-extrabold">
-          PERN AUTH
+        <CustomLink href={ROUTES.HOME} className="text-brand font-extrabold">
+          Shortly
         </CustomLink>
         <div className="flex items-center gap-2">
           <ModeToggle />

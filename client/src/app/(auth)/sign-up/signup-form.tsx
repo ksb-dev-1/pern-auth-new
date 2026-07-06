@@ -65,7 +65,7 @@ export function SignUpForm() {
       <Card className="max-w-sm w-full mx-auto">
         <CardHeader>
           <CardTitle className="text-lg font-bold">
-            Create your <span className="text-brand">Careerly</span> account
+            Create your <span className="text-brand">Shortly</span> account
           </CardTitle>
           <CardDescription>
             Fill in the fields below to sign up to your account.
@@ -157,7 +157,7 @@ export function SignUpForm() {
             </FieldGroup>
 
             <ActionButton loading={loading} className="w-full mt-4">
-              Create an account
+              Sign up
             </ActionButton>
           </form>
         </CardContent>

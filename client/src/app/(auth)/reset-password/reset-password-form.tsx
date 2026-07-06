@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { MoveLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { ActionButton } from "@/components/action-button";
 import { CustomLink } from "@/components/custom-link";
@@ -28,23 +28,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { ROUTES } from "@/constants/routes";
 import { useResetPassword } from "@/hooks/useAuth";
-
-const resetPasswordSchema = z
-  .object({
-    newPassword: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z
-      .string()
-      .min(8, "Password must be at least 8 characters"),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+import { type ResetPasswordType, resetPasswordSchema } from "@/lib/validation";
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const resetPassword = useResetPassword();
 
@@ -52,24 +40,19 @@ export function ResetPasswordForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<ResetPasswordType>({
     resolver: zodResolver(resetPasswordSchema),
-    defaultValues: { newPassword: "", confirmPassword: "" },
+    defaultValues: {
+      newPassword: "",
+      passwordConfirmation: "",
+    },
   });
 
-  // If no token, redirect to forgot password
-  useEffect(() => {
-    if (!token) {
-      router.push(ROUTES.FORGOT_PASSWORD);
-    }
-  }, [token, router]);
-
-  const onSubmit = async (data: {
-    newPassword: string;
-    confirmPassword: string;
-  }) => {
+  const onSubmit = async (data: ResetPasswordType) => {
     if (!token) return;
+
     setError(null);
+
     try {
       await resetPassword.mutateAsync({ token, newPassword: data.newPassword });
     } catch (err) {
@@ -78,7 +61,31 @@ export function ResetPasswordForm() {
   };
 
   if (!token) {
-    return null; // will redirect
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
+        <Card className="max-w-sm w-full mx-auto">
+          <CardHeader>
+            <p className="font-bold text-xl text-red-600 dark:text-red-400">
+              Token is missing!
+            </p>
+          </CardHeader>
+          <CardContent>
+            <p>
+              You can’t reset your password without a valid token. Please
+              request a new password reset link.
+            </p>
+          </CardContent>
+          <CardFooter>
+            <CustomLink
+              href={ROUTES.SIGN_IN}
+              className="text-brand underline flex items-center justify-center gap-2 w-full"
+            >
+              <MoveLeft size={12} /> Go back to send email
+            </CustomLink>
+          </CardFooter>
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -110,18 +117,20 @@ export function ResetPasswordForm() {
                 )}
               </Field>
               <Field>
-                <FieldLabel htmlFor="confirmPassword">
+                <FieldLabel htmlFor="passwordConfirmation">
                   Confirm Password
                 </FieldLabel>
+
                 <Input
-                  id="confirmPassword"
+                  id="passwordConfirmation"
                   type="password"
                   placeholder="Confirm new password"
-                  {...register("confirmPassword")}
-                  aria-invalid={!!errors.confirmPassword}
+                  {...register("passwordConfirmation")}
+                  aria-invalid={!!errors.passwordConfirmation}
                 />
-                {errors.confirmPassword && (
-                  <FieldError errors={[errors.confirmPassword]} />
+
+                {errors.passwordConfirmation && (
+                  <FieldError errors={[errors.passwordConfirmation]} />
                 )}
               </Field>
             </FieldGroup>
