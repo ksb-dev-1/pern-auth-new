@@ -104,7 +104,7 @@ export function ForgotPasswordForm() {
               Remember your password?{" "}
               <CustomLink
                 href={ROUTES.SIGN_IN}
-                className="text-brand underline"
+                className="text-brand hover:underline"
               >
                 Sign in
               </CustomLink>

@@ -53,7 +53,10 @@ export function PasswordField<
         <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
 
         {showForgotPassword && (
-          <CustomLink href="/forgot-password" className="text-brand underline">
+          <CustomLink
+            href="/forgot-password"
+            className="text-brand hover:underline"
+          >
             Forgot your password?
           </CustomLink>
         )}

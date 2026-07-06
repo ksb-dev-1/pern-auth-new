@@ -126,7 +126,7 @@ export function SignInForm() {
               Don&apos;t have an account?{" "}
               <CustomLink
                 href={ROUTES.SIGN_UP}
-                className="text-brand underline"
+                className="text-brand hover:underline"
               >
                 Sign up
               </CustomLink>
