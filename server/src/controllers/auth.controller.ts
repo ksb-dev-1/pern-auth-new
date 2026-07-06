@@ -57,15 +57,22 @@ export const signinController = asyncHandler(
     );
 
     // Set refresh token as HTTP-only cookie
-    res.cookie("refreshToken", result.refreshToken, {
+    const cookieOptions: any = {
       httpOnly: true,
       secure: config.nodeEnv === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: "/",
-      domain: config.cookieDomain,
-    });
+    };
 
+    // Only add domain if it exists and is not empty
+    if (config.cookieDomain?.trim()) {
+      cookieOptions.domain = config.cookieDomain;
+    }
+
+    res.cookie("refreshToken", result.refreshToken, cookieOptions);
+
+    // ✅ Send the response – this is what was missing
     res.json({
       accessToken: result.accessToken,
       user: result.user,
