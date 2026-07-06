@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import { useRouter } from "next/navigation";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { FaGithub } from "react-icons/fa";
@@ -41,7 +39,7 @@ export function SignInForm() {
   const [loadingProvider, setLoadingProvider] = useState<
     "google" | "github" | null
   >(null);
-  const router = useRouter();
+
   const signin = useSignin();
 
   const form = useForm<SignInType>({
