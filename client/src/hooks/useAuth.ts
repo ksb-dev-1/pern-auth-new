@@ -18,6 +18,7 @@ interface SignupResponse {
   message: string;
 }
 
+// ---------- Signup ----------
 export function useSignup() {
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
@@ -52,6 +53,7 @@ export function useSignup() {
   });
 }
 
+// ---------- Verify email ----------
 export function useVerifyEmail() {
   const router = useRouter();
 
@@ -79,7 +81,8 @@ export function useVerifyEmail() {
   });
 }
 
-export function useResendVerification() {
+// ---------- Resend verification email ----------
+export function useResendVerificationEmail() {
   return useMutation({
     mutationFn: async (email: string) => {
       const res = await fetch(`${API_BASE}/auth/resend-verification`, {
@@ -105,6 +108,7 @@ export function useResendVerification() {
   });
 }
 
+// ---------- Signin ----------
 export function useSignin() {
   const router = useRouter();
   const setAuth = useAuthStore((state) => state.setAuth);
@@ -140,6 +144,7 @@ export function useSignin() {
   });
 }
 
+// ---------- Signout ----------
 export function useSignout() {
   const router = useRouter();
   const clearAuth = useAuthStore((state) => state.clearAuth);
@@ -173,6 +178,69 @@ export function useSignout() {
       // Still clear local auth even if server fails (e.g., token expired)
       clearAuth();
       router.push(ROUTES.SIGN_IN);
+    },
+  });
+}
+
+// ---------- Forgot Password ----------
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: async (email: string) => {
+      const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+        credentials: "include",
+      });
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json?.error || "Failed to send reset link");
+      }
+
+      return json as { message: string };
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || "Reset link sent to your email");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Could not send reset link");
+    },
+  });
+}
+
+// ---------- Reset Password ----------
+export function useResetPassword() {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: async ({
+      token,
+      newPassword,
+    }: {
+      token: string;
+      newPassword: string;
+    }) => {
+      const res = await fetch(`${API_BASE}/auth/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, newPassword }),
+        credentials: "include",
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json?.error || "Password reset failed");
+      }
+      return json as { message: string };
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || "Password reset successfully!");
+      router.push(ROUTES.SIGN_IN);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Reset failed");
     },
   });
 }

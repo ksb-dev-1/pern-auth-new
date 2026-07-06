@@ -1,10 +1,10 @@
 "use client";
 
 import { ActionButton } from "@/components/action-button";
-import { useResendVerification } from "@/hooks/useAuth";
+import { useResendVerificationEmail } from "@/hooks/useAuth";
 
 export function ResendVerificationButton({ email }: { email: string }) {
-  const resend = useResendVerification();
+  const resend = useResendVerificationEmail();
 
   async function resendVerificationEmail() {
     if (!email) {

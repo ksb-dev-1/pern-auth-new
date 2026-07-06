@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MoveLeft } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { ActionButton } from "@/components/action-button";
 import { CustomLink } from "@/components/custom-link";
@@ -17,29 +17,44 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { ROUTES } from "@/constants/routes";
-import { ForgotPasswordType, forgotPasswordSchema } from "@/lib/validation";
+import { useForgotPassword } from "@/hooks/useAuth";
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
 
 export function ForgotPasswordForm() {
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const forgotPassword = useForgotPassword();
 
-  const form = useForm<ForgotPasswordType>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: {
-      email: "",
-    },
+    defaultValues: { email: "" },
   });
 
-  useEffect(() => {
-    form.reset(form.formState.defaultValues);
-  }, [form]);
-
-  async function onSubmit({ email }: ForgotPasswordType) {}
-
-  const loading = form.formState.isSubmitting;
+  const onSubmit = async (data: { email: string }) => {
+    setError(null);
+    setSuccess(null);
+    try {
+      await forgotPassword.mutateAsync(data.email);
+      setSuccess("If that email is registered, you'll receive a reset link.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
@@ -47,60 +62,54 @@ export function ForgotPasswordForm() {
         <CardHeader>
           <CardTitle className="text-lg font-bold">Forgot Password</CardTitle>
           <CardDescription>
-            Enter your registered email below and we’ll send you a password
-            reset link
+            Enter your email and we&apos;ll send you a reset link.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {successMessage && (
-            <Alert
-              variant="success"
-              className="mb-4 flex items-center flex-wrap"
+          {error && (
+            <Alert variant="error" className="mb-4">
+              {error}
+            </Alert>
+          )}
+          {success && (
+            <Alert variant="success" className="mb-4">
+              {success}
+            </Alert>
+          )}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="your@email.com"
+                  {...register("email")}
+                  aria-invalid={!!errors.email}
+                />
+                {errors.email && <FieldError errors={[errors.email]} />}
+              </Field>
+            </FieldGroup>
+            <ActionButton
+              loading={forgotPassword.isPending}
+              className="w-full mt-4"
             >
-              {successMessage}
-            </Alert>
-          )}
-
-          {errorMessage && (
-            <Alert variant="error" className="mb-4 flex items-center flex-wrap">
-              {errorMessage}
-            </Alert>
-          )}
-
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <Controller
-              name="email"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="your@email.com"
-                    autoComplete="off"
-                  />
-
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <ActionButton loading={loading} className="w-full mt-4">
-              Submit
+              Send Reset Link
             </ActionButton>
           </form>
         </CardContent>
         <CardFooter>
-          <CustomLink
-            href={ROUTES.SIGN_IN}
-            className="text-brand underline flex items-center justify-center gap-2"
-          >
-            <MoveLeft size={12} /> Bcak to Sign in
-          </CustomLink>
+          <div className="flex w-full justify-center">
+            <p className="text-muted-foreground text-center text-sm">
+              Remember your password?{" "}
+              <CustomLink
+                href={ROUTES.SIGN_IN}
+                className="text-brand underline"
+              >
+                Sign in
+              </CustomLink>
+            </p>
+          </div>
         </CardFooter>
       </Card>
     </div>
