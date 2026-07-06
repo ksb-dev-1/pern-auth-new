@@ -16,9 +16,8 @@ import { ROUTES } from "@/constants/routes";
 import { ResetPasswordForm } from "./reset-password-form";
 
 export const metadata: Metadata = {
-  title: "Reset Password - Careerly",
-  description:
-    "Create a new password to securely access your Careerly account.",
+  title: "Reset Password - Shortly",
+  description: "Create a new password to securely access your Shortly account.",
 };
 
 async function GetToken({
