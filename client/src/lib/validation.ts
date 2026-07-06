@@ -1,9 +1,9 @@
 import z from "zod";
 
-// Email schema
+// ----- Email schema -----
 export const emailSchema = z.email({ message: "Please enter a valid email" });
 
-// Password schema
+// ----- Password schema -----
 const passwordSchema = z
   .string()
   .min(8, "Password must be at least 8 characters")
@@ -12,27 +12,27 @@ const passwordSchema = z
   .regex(/[0-9]/, "Must contain at least one number")
   .regex(/[^A-Za-z0-9]/, "Must contain at least one special character");
 
-// Confirm password schema
+// ----- Confirm password schema -----
 export const confirmPasswordSchema = z
   .string()
   .min(1, { message: "Please confirm password" });
 
-// Sign-up schema
+// ----- Sign-up schema -----
 export const signUpSchema = z
   .object({
     name: z.string().min(1, { message: "Name is required" }),
     email: emailSchema,
     password: passwordSchema,
-    passwordConfirmation: confirmPasswordSchema,
+    confirmPassword: confirmPasswordSchema,
   })
-  .refine((data) => data.password === data.passwordConfirmation, {
+  .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
-    path: ["passwordConfirmation"],
+    path: ["confirmPassword"],
   });
 
 export type SignUpType = z.infer<typeof signUpSchema>;
 
-// Sign-in schema
+// ----- Sign-in schema -----
 export const signInSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
@@ -41,55 +41,17 @@ export const signInSchema = z.object({
 
 export type SignInType = z.infer<typeof signInSchema>;
 
-// Forgot password schema
+// ----- Forgot password schema -----
 export const forgotPasswordSchema = z.object({
   email: emailSchema,
 });
 
 export type ForgotPasswordType = z.infer<typeof forgotPasswordSchema>;
 
-// Reset password schema
+// ----- Reset password schema -----
 export const resetPasswordSchema = z.object({
   newPassword: passwordSchema,
-  passwordConfirmation: confirmPasswordSchema,
+  confirmPassword: confirmPasswordSchema,
 });
 
 export type ResetPasswordType = z.infer<typeof resetPasswordSchema>;
-
-// Url schema
-export const urlSchema = z.string().refine(
-  (val) => {
-    try {
-      new URL(val);
-      return true;
-    } catch {
-      return false;
-    }
-  },
-  { message: "Invalid URL" },
-);
-
-export type UrlType = z.infer<typeof urlSchema>;
-
-// Project schema
-export const projectSchema = z.object({
-  name: z.string().min(1, "Project name is required"),
-  link: urlSchema,
-});
-
-export type ProjectType = z.infer<typeof projectSchema>;
-
-// Social link schema
-export const socialLinkSchema = z.object({
-  platform: z.enum([
-    "github",
-    "linkedin",
-    "twitter",
-    "portfolio",
-    "leetcode",
-    "hackerrank",
-  ]),
-  url: urlSchema,
-});
-
-export type SocialLinkType = z.infer<typeof socialLinkSchema>;

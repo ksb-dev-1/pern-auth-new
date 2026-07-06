@@ -39,7 +39,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       newPassword: "",
-      passwordConfirmation: "",
+      confirmPassword: "",
     },
   });
 
@@ -82,20 +82,20 @@ export function ResetPasswordForm({ token }: { token: string }) {
                 )}
               </Field>
               <Field>
-                <FieldLabel htmlFor="passwordConfirmation">
+                <FieldLabel htmlFor="confirmPassword">
                   Confirm Password
                 </FieldLabel>
 
                 <Input
-                  id="passwordConfirmation"
+                  id="confirmPassword"
                   type="password"
                   placeholder="Confirm new password"
-                  {...register("passwordConfirmation")}
-                  aria-invalid={!!errors.passwordConfirmation}
+                  {...register("confirmPassword")}
+                  aria-invalid={!!errors.confirmPassword}
                 />
 
-                {errors.passwordConfirmation && (
-                  <FieldError errors={[errors.passwordConfirmation]} />
+                {errors.confirmPassword && (
+                  <FieldError errors={[errors.confirmPassword]} />
                 )}
               </Field>
             </FieldGroup>
@@ -103,7 +103,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
               loading={resetPassword.isPending}
               className="w-full mt-4"
             >
-              Reset Password
+              Reset password
             </ActionButton>
           </form>
         </CardContent>

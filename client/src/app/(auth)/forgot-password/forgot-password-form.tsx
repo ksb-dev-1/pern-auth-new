@@ -94,7 +94,7 @@ export function ForgotPasswordForm() {
               loading={forgotPassword.isPending}
               className="w-full mt-4"
             >
-              Send Password Reset Link
+              Send password reset link
             </ActionButton>
           </form>
         </CardContent>

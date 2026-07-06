@@ -37,7 +37,7 @@ export function SignUpForm() {
       name: "",
       email: "",
       password: "",
-      passwordConfirmation: "",
+      confirmPassword: "",
     },
   });
 
@@ -143,7 +143,7 @@ export function SignUpForm() {
               />
 
               <Controller
-                name="passwordConfirmation"
+                name="confirmPassword"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <PasswordField
