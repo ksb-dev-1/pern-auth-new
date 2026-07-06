@@ -9,33 +9,38 @@ const passwordSchema = z
   .regex(/[0-9]/, "Must contain at least one number")
   .regex(/[^A-Za-z0-9]/, "Must contain at least one special character");
 
-// ----- Signup -----
+// ----- Signup Schema -----
 export const signupSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100).optional(),
   email: z.email().transform((v) => v.trim().toLowerCase()),
   password: passwordSchema,
 });
 
-// ----- Signin -----
+// ----- Signin Schema -----
 export const signinSchema = z.object({
   email: z.email().transform((v) => v.trim().toLowerCase()),
   password: z.string().min(1, "Password required"),
 });
 
-// ----- Forgot Password -----
+// ----- Forgot Password Schema -----
 export const forgotPasswordSchema = z.object({
   email: z.email().transform((v) => v.trim().toLowerCase()),
 });
 
-// ----- Reset Password -----
+// ----- Reset Password Schema -----
 export const resetPasswordSchema = z.object({
   token: z.string().min(1, "Token required"),
   newPassword: passwordSchema,
 });
 
-// ----- Resend Verification -----
+// ----- Resend Verification Schema -----
 export const resendVerificationSchema = z.object({
   email: z.email().transform((v) => v.trim().toLowerCase()),
+});
+
+// ----- Update Profile Schema -----
+export const updateProfileSchema = z.object({
+  name: z.string().trim().min(1).max(100).optional(),
 });
 
 // ----- Refresh Token (if using body, but we usually read from cookie) -----

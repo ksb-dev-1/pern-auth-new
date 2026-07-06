@@ -12,6 +12,9 @@ const envSchema = z.object({
   FRONTEND_URL: z.url(),
   EMAIL_FROM: z.email(),
   COOKIE_DOMAIN: z.string().optional(),
+  CLOUDINARY_CLOUD_NAME: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -29,4 +32,9 @@ export const config = {
   frontendUrl: parsed.data.FRONTEND_URL,
   emailFrom: parsed.data.EMAIL_FROM,
   cookieDomain: parsed.data.COOKIE_DOMAIN,
+  cloudinary: {
+    cloudName: parsed.data.CLOUDINARY_CLOUD_NAME,
+    apiKey: parsed.data.CLOUDINARY_API_KEY,
+    apiSecret: parsed.data.CLOUDINARY_API_SECRET,
+  },
 };
