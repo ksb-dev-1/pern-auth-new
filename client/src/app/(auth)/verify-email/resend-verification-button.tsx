@@ -1,32 +1,35 @@
 "use client";
 
-import { useState } from "react";
-
 import { ActionButton } from "@/components/action-button";
+import { useResendVerification } from "@/hooks/useAuth";
 
 export function ResendVerificationButton({ email }: { email: string }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const resend = useResendVerification();
 
-  async function resendVerificationEmail() {}
+  async function resendVerificationEmail() {
+    if (!email) {
+      return;
+    }
+    await resend.mutateAsync(email);
+  }
 
   return (
     <div className="space-y-4">
-      {success && (
+      {resend.isSuccess && (
         <div role="status" className="text-sm text-green-600">
-          {success}
+          Verification email sent! Please check your inbox.
         </div>
       )}
-      {error && (
+
+      {resend.isError && (
         <div role="alert" className="text-sm text-red-600">
-          {error}
+          {resend.error?.message || "Failed to resend verification email"}
         </div>
       )}
 
       <ActionButton
         onClick={resendVerificationEmail}
-        loading={isLoading}
+        loading={resend.isPending}
         className="w-full"
       >
         Resend verification email
