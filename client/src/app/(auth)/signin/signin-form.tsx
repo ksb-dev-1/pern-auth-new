@@ -4,16 +4,11 @@ import { useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import { toast } from "sonner";
 
 import { ActionButton } from "@/components/action-button";
 import { CustomLink } from "@/components/custom-link";
 import { PasswordField } from "@/components/shared/password-field";
-import { Spinner } from "@/components/spinner";
 import { Alert } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -22,7 +17,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
   FieldError,
@@ -36,9 +30,6 @@ import { SignInType, signInSchema } from "@/lib/validation";
 
 export function SignInForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loadingProvider, setLoadingProvider] = useState<
-    "google" | "github" | null
-  >(null);
 
   const signin = useSignin();
 
@@ -55,7 +46,7 @@ export function SignInForm() {
     form.reset(form.formState.defaultValues);
   }, [form]);
 
-  async function onSubmit({ email, password, rememberMe }: SignInType) {
+  async function onSubmit({ email, password }: SignInType) {
     setErrorMessage(null);
     try {
       await signin.mutateAsync({ email, password });
@@ -65,11 +56,6 @@ export function SignInForm() {
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : "Signin failed");
     }
-  }
-
-  async function handleSocialSignIn(provider: "github" | "google") {
-    // Placeholder – implement OAuth later
-    toast.info(`${provider} signin coming soon`);
   }
 
   const loading = signin.isPending;
@@ -128,51 +114,10 @@ export function SignInForm() {
               />
             </FieldGroup>
 
-            <Controller
-              name="rememberMe"
-              control={form.control}
-              render={({ field }) => (
-                <div className="flex items-center gap-2 mt-4">
-                  <Checkbox
-                    id={field.name}
-                    checked={!!field.value}
-                    onCheckedChange={(checked) =>
-                      field.onChange(checked === true)
-                    }
-                    className={`cursor-pointer ${field.value ? "bg-brand! text-white! dark:text-background! border-brand!" : ""}`}
-                  />
-                  <FieldLabel htmlFor={field.name} className="cursor-pointer">
-                    Remember me
-                  </FieldLabel>
-                </div>
-              )}
-            />
-
             <ActionButton loading={loading} className="w-full mt-4">
               Sign in
             </ActionButton>
           </form>
-
-          <div className="grid grid-cols-2 gap-4 border-t pt-6 mt-6">
-            <Button
-              variant="outline"
-              disabled={loadingProvider !== null}
-              onClick={() => handleSocialSignIn("google")}
-              className="w-full"
-            >
-              <FcGoogle /> Google {loadingProvider === "google" && <Spinner />}
-            </Button>
-
-            <Button
-              variant="outline"
-              disabled={loadingProvider !== null}
-              onClick={() => handleSocialSignIn("github")}
-              className="w-full"
-            >
-              <FaGithub /> Github
-              {loadingProvider === "github" && <Spinner />}
-            </Button>
-          </div>
         </CardContent>
 
         <CardFooter>
