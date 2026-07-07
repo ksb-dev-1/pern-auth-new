@@ -192,7 +192,7 @@ export function EditProfile({
               htmlFor="image-upload"
               className="cursor-pointer text-sm text-brand hover:underline"
             >
-              {selectedFile ? "Change Image" : "Select Image"}
+              {selectedFile ? "Change Image" : "Select New Image"}
             </Label>
 
             <Input
