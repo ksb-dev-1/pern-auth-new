@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --max-width-custom: var(--width);
+  --width-custom: var(--width);
   --color-brand: var(--brand);
   --color-brand-hover: var(--brand-hover);
   --color-background: var(--background);

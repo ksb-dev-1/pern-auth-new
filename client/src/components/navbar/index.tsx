@@ -3,11 +3,11 @@
 import { ModeToggle } from "@/components/navbar/mode-toggle";
 import { ProfileDropdownMenu } from "@/components/navbar/profile-dropdown";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ROUTES } from "@/constants/routes";
 import { useAuthStore } from "@/store/auth-store";
 
 import { CustomLink } from "../custom-link";
+import { LoadingFallback } from "../loading-fallback";
 
 function NavbarLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -33,12 +33,8 @@ function NotSignedIn() {
   );
 }
 
-function SignedIn({ imageUrl }: { imageUrl: string | null | undefined }) {
-  return <ProfileDropdownMenu image={imageUrl} />;
-}
-
-function Loading() {
-  return <Skeleton className="h-9 w-9 rounded-full" />;
+function SignedIn() {
+  return <ProfileDropdownMenu />;
 }
 
 export function Navbar() {
@@ -52,9 +48,9 @@ export function Navbar() {
   let content;
 
   if (isLoading) {
-    content = <Loading />;
+    content = <LoadingFallback />;
   } else if (isAuthenticated) {
-    content = <SignedIn imageUrl={user?.imageUrl} />;
+    content = <SignedIn />;
   } else {
     content = <NotSignedIn />;
   }

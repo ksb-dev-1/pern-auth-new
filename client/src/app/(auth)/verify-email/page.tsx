@@ -8,6 +8,6 @@ export const metadata: Metadata = {
     "Verify your email address to activate your Shortly account and access all URL shortening features.",
 };
 
-export default async function VerifyEmailPage() {
+export default function VerifyEmailPage() {
   return <VerifyEmailContent />;
 }

@@ -15,20 +15,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ROUTES } from "@/constants/routes";
 import { useSignout } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/auth-store";
 
-interface ProfileDropdownProps {
-  image: string | null | undefined;
-}
+import { CustomLink } from "../custom-link";
 
 const AVATAR_SIZE = 36;
 
-export function ProfileDropdownMenu({ image }: ProfileDropdownProps) {
+export function ProfileDropdownMenu() {
   const [open, setOpen] = useState<boolean>(false);
   const signout = useSignout();
   const user = useAuthStore((state) => state.user);
   const displayName = user?.name || user?.email || "User";
+  const image = user?.imageUrl;
 
   const handleSignOut = () => {
     signout.mutate();
@@ -62,6 +62,13 @@ export function ProfileDropdownMenu({ image }: ProfileDropdownProps) {
           {displayName}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <CustomLink href={ROUTES.PROFILE}>
+            <User className="mr-2 h-4 w-4" aria-hidden="true" />
+            Profile
+          </CustomLink>
+        </DropdownMenuItem>
 
         <DropdownMenuItem
           disabled={signout.isPending}
