@@ -7,6 +7,8 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: Infinity,
       gcTime: Infinity,
+      retry: false,
+      refetchOnWindowFocus: false,
     },
   },
 });
