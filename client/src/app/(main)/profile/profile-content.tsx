@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Mail, SquarePen } from "lucide-react";
+import { CheckCircle2, Mail } from "lucide-react";
 
 import { Container } from "@/components/container";
 import { LoadingFallback } from "@/components/loading-fallback";
