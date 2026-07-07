@@ -16,14 +16,10 @@ export function ProfileContent() {
   const { data, isLoading, error } = useProfile();
 
   if (isLoading) {
-    return (
-      <Container className="flex items-center justify-center min-h-[50vh]">
-        <LoadingFallback color="text-brand" />
-      </Container>
-    );
+    return <LoadingFallback color="text-brand" />;
   }
 
-  if (!data || error) {
+  if (error) {
     return (
       <Container className="flex flex-col items-center justify-center space-y-4 -mt-16">
         <p className="text-red-600 font-bold text-xl text-center">
@@ -37,6 +33,10 @@ export function ProfileContent() {
         </Button>
       </Container>
     );
+  }
+
+  if (!data) {
+    return <LoadingFallback color="text-brand" />;
   }
 
   const { name, email, imageUrl, isVerified } = data;
@@ -71,7 +71,7 @@ export function ProfileContent() {
               </div>
             </div>
 
-            <EditProfile />
+            <EditProfile currentName={name} currentImageUrl={imageUrl} />
           </div>
         </CardHeader>
 

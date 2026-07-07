@@ -21,7 +21,7 @@ export const uploadAvatar = async (
   return new Promise<{ url: string; publicId: string }>((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        public_id: `url-shortner/profile/${userId}/avatar`,
+        public_id: `shortly/profile/${userId}/avatar`,
         // public_id: publicId,
         overwrite: true, // replace existing image
         resource_type: "image",
