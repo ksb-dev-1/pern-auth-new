@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useProfile } from "@/hooks/useProfile";
 
+import { EditProfile } from "./edit-dialog";
+
 export function ProfileContent() {
   const { data, isLoading, error } = useProfile();
 
@@ -69,15 +71,7 @@ export function ProfileContent() {
               </div>
             </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              className="absolute top-4 right-4 gap-2 shrink-0"
-              onClick={() => console.log("Edit profile")}
-            >
-              <SquarePen className="h-3.5 w-3.5" />
-              Edit
-            </Button>
+            <EditProfile />
           </div>
         </CardHeader>
 
