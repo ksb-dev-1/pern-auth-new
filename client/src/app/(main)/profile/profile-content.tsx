@@ -23,20 +23,16 @@ export function ProfileContent() {
 
   if (!data || error) {
     return (
-      <Container className="flex items-center justify-center min-h-[50vh]">
-        <Card className="max-w-md w-full p-6 text-center">
-          <p className="text-red-600 font-medium">Error Loading Profile</p>
-          <p className="text-sm text-muted-foreground mt-1">
-            {error?.message || "Please try again later."}
-          </p>
-          <Button
-            variant="outline"
-            className="mt-4"
-            onClick={() => window.location.reload()}
-          >
-            Refresh
-          </Button>
-        </Card>
+      <Container className="flex flex-col items-center justify-center space-y-4 -mt-16">
+        <p className="text-red-600 font-bold text-xl text-center">
+          Error Loading Profile!
+        </p>
+        <p className="text-sm text-muted-foreground text-center">
+          {error?.message || "Please try again later."}
+        </p>
+        <Button variant="outline" onClick={() => window.location.reload()}>
+          Refresh
+        </Button>
       </Container>
     );
   }
@@ -49,18 +45,16 @@ export function ProfileContent() {
       <Card className="relative">
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:text-left sm:items-center gap-4">
-            {/* Avatar - larger and centered on mobile */}
-            <Avatar className="h-20 w-20 sm:h-24 sm:w-24 shrink-0">
+            <Avatar className="h-24 w-24 shrink-0">
               <AvatarImage src={imageUrl || ""} alt={name} />
               <AvatarFallback className="text-2xl font-bold">
                 {initials}
               </AvatarFallback>
             </Avatar>
 
-            {/* User Info */}
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold tracking-tight">{name}</h1>
+                <h1 className="text-lg font-bold tracking-tight">{name}</h1>
                 {isVerified && (
                   <Badge className="gap-1 bg-green-600 hover:bg-green-600 text-white border-0 w-fit">
                     <CheckCircle2 className="h-3 w-3" />
@@ -75,7 +69,6 @@ export function ProfileContent() {
               </div>
             </div>
 
-            {/* Edit Button */}
             <Button
               variant="outline"
               size="sm"
