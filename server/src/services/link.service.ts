@@ -9,6 +9,29 @@ import { logger } from "../utils/logger.js";
 
 const SHORT_CODE_LENGTH = 6;
 
+const RESERVED_ALIASES = [
+  "admin",
+  "api",
+  "login",
+  "signin",
+  "signup",
+  "logout",
+  "profile",
+  "settings",
+  "dashboard",
+  "health",
+  "auth",
+  "favicon",
+  "robots",
+  "sitemap",
+  "static",
+  "assets",
+];
+
+function isReservedAlias(alias: string): boolean {
+  return RESERVED_ALIASES.includes(alias.toLowerCase());
+}
+
 // Generate a unique short code (with collision retry)
 async function generateUniqueShortCode(): Promise<string> {
   for (let attempt = 1; attempt <= 3; attempt++) {
@@ -37,6 +60,7 @@ async function generateUniqueShortCode(): Promise<string> {
 export async function createShortLinkService(
   userId: string,
   originalUrl: string,
+  customAlias?: string,
 ) {
   // Validate URL format
   try {
@@ -45,7 +69,30 @@ export async function createShortLinkService(
     throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid URL format");
   }
 
-  const shortCode = await generateUniqueShortCode();
+  let shortCode: string;
+
+  if (customAlias) {
+    // Check if alias is reserved
+    if (isReservedAlias(customAlias)) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "This alias is reserved");
+    }
+
+    // Check if alias already exists
+    const [existing] = await db
+      .select()
+      .from(links)
+      .where(eq(links.shortCode, customAlias))
+      .limit(1);
+
+    if (existing) {
+      throw new ApiError(StatusCodes.CONFLICT, "This alias is already taken");
+    }
+
+    shortCode = customAlias;
+  } else {
+    // Generate random code (existing logic)
+    shortCode = await generateUniqueShortCode();
+  }
 
   const [newLink] = await db
     .insert(links)
@@ -67,6 +114,7 @@ export async function createShortLinkService(
       "Failed to create short link",
     );
   }
+
   return newLink;
 }
 

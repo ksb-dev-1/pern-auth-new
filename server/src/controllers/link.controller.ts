@@ -21,11 +21,14 @@ export const createShortLinkController = asyncHandler(
       throw new ApiError(StatusCodes.UNAUTHORIZED, "Unauthorized");
     }
 
-    const { originalUrl } = validate(createLinkSchema, req.body);
+    const { originalUrl, customAlias } = validate(createLinkSchema, req.body);
 
-    const link = await linkService.createShortLinkService(userId, originalUrl);
+    const link = await linkService.createShortLinkService(
+      userId,
+      originalUrl,
+      customAlias,
+    );
 
-    // Build full short URL
     const shortUrl = `${config.baseUrl}/${link.shortCode}`;
 
     res.status(StatusCodes.CREATED).json({

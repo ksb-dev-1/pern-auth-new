@@ -5,7 +5,7 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 
-import { redirectToOriginal } from "./controllers/link.controller.js";
+import { redirectToOriginalController } from "./controllers/link.controller.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { authLimiter } from "./middlewares/rateLimitter.js";
 import authRouter from "./routes/auth.routes.js";
@@ -71,7 +71,7 @@ app.get("/health", (req, res) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1", profileRouter);
 app.use("/api/v1/links", linkRouter);
-app.get("/:shortCode", redirectToOriginal);
+app.get("/:shortCode", redirectToOriginalController);
 
 // Global error handler (must be last)
 app.use(errorHandler);
