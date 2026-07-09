@@ -6,6 +6,7 @@ const envSchema = z.object({
     .enum(["development", "production", "test"])
     .default("development"),
   PORT: z.string().default("5000"),
+  BASE_URL: z.url(),
   DATABASE_URL: z.url(),
   ACCESS_TOKEN_SECRET: z.string().min(32),
   RESEND_API_KEY: z.string().min(1),
@@ -26,6 +27,7 @@ if (!parsed.success) {
 export const config = {
   nodeEnv: parsed.data.NODE_ENV,
   port: parseInt(parsed.data.PORT, 10),
+  baseUrl: parsed.data.BASE_URL,
   databaseUrl: parsed.data.DATABASE_URL,
   accessTokenSecret: parsed.data.ACCESS_TOKEN_SECRET,
   resendApiKey: parsed.data.RESEND_API_KEY,

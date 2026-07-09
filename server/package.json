@@ -33,6 +33,7 @@
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.11.0",
     "multer": "^2.2.0",
+    "nanoid": "^5.1.16",
     "pg": "^8.22.0",
     "react-email": "^6.6.6",
     "resend": "^6.17.1",

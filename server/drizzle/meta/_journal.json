@@ -8,6 +8,13 @@
       "when": 1783250824727,
       "tag": "0000_icy_mongoose",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1783594135679,
+      "tag": "0001_nifty_exiles",
+      "breakpoints": true
     }
   ]
 }

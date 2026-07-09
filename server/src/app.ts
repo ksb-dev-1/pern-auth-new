@@ -8,6 +8,7 @@ import morgan from "morgan";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { authLimiter } from "./middlewares/rateLimitter.js";
 import authRouter from "./routes/auth.routes.js";
+import linkRouter from "./routes/link.routes.js";
 import profileRouter from "./routes/profile.routes.js";
 import { config } from "./utils/env.js";
 import { morganStream } from "./utils/logger.js";
@@ -68,6 +69,7 @@ app.get("/health", (req, res) => {
 // API routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1", profileRouter);
+app.use("/api/v1/links", linkRouter);
 
 // Global error handler (must be last)
 app.use(errorHandler);
