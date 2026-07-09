@@ -29,7 +29,7 @@ export default function VerifyEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={card}>
-            <Text style={brand}>Your App</Text>
+            <Text style={brand}>Shortly</Text>
 
             <Heading style={heading}>Verify your email</Heading>
 
