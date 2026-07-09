@@ -1,4 +1,4 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { StatusCodes } from "http-status-codes";
 import { nanoid } from "nanoid";
 
@@ -108,4 +108,20 @@ export async function getUserLinks(userId: string) {
     .from(links)
     .where(eq(links.userId, userId))
     .orderBy(desc(links.createdAt));
+}
+
+export async function deleteLinkById(linkId: string, userId: string) {
+  const [deletedLink] = await db
+    .delete(links)
+    .where(and(eq(links.id, linkId), eq(links.userId, userId)))
+    .returning({ id: links.id });
+
+  if (!deletedLink) {
+    throw new ApiError(
+      StatusCodes.NOT_FOUND,
+      "Link not found or you don't have permission",
+    );
+  }
+
+  return deletedLink;
 }

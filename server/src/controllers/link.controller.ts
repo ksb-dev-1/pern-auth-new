@@ -6,7 +6,7 @@ import * as linkService from "../services/link.service.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { config } from "../utils/env.js";
 import { ApiError } from "../utils/errors.js";
-import { createLinkSchema } from "../validation/link.js";
+import { createLinkSchema, deleteLinkSchema } from "../validation/link.js";
 import { validate } from "../validation/validation.js";
 
 export const createShortLink = asyncHandler(
@@ -67,5 +67,25 @@ export const getUserLinks = asyncHandler(
     }));
 
     res.json(linksWithShortUrl);
+  },
+);
+
+export const deleteLink = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const userId = req.userId;
+
+    if (!userId) throw new ApiError(StatusCodes.UNAUTHORIZED, "Unauthorized");
+
+    const { linkId } = req.params;
+
+    if (!linkId || typeof linkId !== "string") {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid link ID");
+    }
+
+    const validated = validate(deleteLinkSchema, { linkId });
+
+    await linkService.deleteLinkById(validated.linkId, userId);
+
+    res.status(StatusCodes.NO_CONTENT).send();
   },
 );
