@@ -6,7 +6,7 @@ import { users } from "../db/schema/index.js";
 import { uploadAvatar } from "../utils/cloudinary.js";
 import { ApiError } from "../utils/errors.js";
 
-// ---------- Get Profile ----------
+// ---------- Get profile service ----------
 export async function getProfile(userId: string) {
   if (!userId) {
     throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
@@ -30,7 +30,7 @@ export async function getProfile(userId: string) {
   return user;
 }
 
-// ---------- Update Profile ----------
+// ---------- Update profile service ----------
 export async function updateProfile(
   userId: string,
   name?: string,

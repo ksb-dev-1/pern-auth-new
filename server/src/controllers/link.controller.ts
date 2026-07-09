@@ -9,7 +9,11 @@ import { ApiError } from "../utils/errors.js";
 import { createLinkSchema, deleteLinkSchema } from "../validation/link.js";
 import { validate } from "../validation/validation.js";
 
-export const createShortLink = asyncHandler(
+/**
+ * Create short link controller
+ * POST /
+ */
+export const createShortLinkController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
     const userId = req.userId;
 
@@ -19,7 +23,7 @@ export const createShortLink = asyncHandler(
 
     const { originalUrl } = validate(createLinkSchema, req.body);
 
-    const link = await linkService.createShortLink(userId, originalUrl);
+    const link = await linkService.createShortLinkService(userId, originalUrl);
 
     // Build full short URL
     const shortUrl = `${config.baseUrl}/${link.shortCode}`;
@@ -35,10 +39,10 @@ export const createShortLink = asyncHandler(
 );
 
 /**
- * Redirect to original URL
+ * Redirect to original URL controller
  * GET /:shortCode
  */
-export const redirectToOriginal = asyncHandler(
+export const redirectToOriginalController = asyncHandler(
   async (req: Request, res: Response) => {
     const shortCode = req.params.shortCode as string; // ✅ Type assertion
 
@@ -46,14 +50,18 @@ export const redirectToOriginal = asyncHandler(
       throw new ApiError(StatusCodes.BAD_REQUEST, "Short code is required");
     }
 
-    const link = await linkService.getLinkByShortCode(shortCode);
+    const link = await linkService.getLinkByShortCodeService(shortCode);
     linkService.incrementClicks(link.id).catch(() => {});
 
     res.redirect(StatusCodes.MOVED_PERMANENTLY, link.originalUrl);
   },
 );
 
-export const getUserLinks = asyncHandler(
+/**
+ * Get user links controller
+ * GET /:shortCode
+ */
+export const getUserLinksController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
     const userId = req.userId;
 
@@ -64,7 +72,7 @@ export const getUserLinks = asyncHandler(
     const offset = Math.max(Number(req.query.offset) || 0, 0);
 
     const [links, total] = await Promise.all([
-      linkService.getUserLinks(userId, limit, offset),
+      linkService.getUserLinksService(userId, limit, offset),
       linkService.getTotalLinksCount(userId),
     ]);
 
@@ -85,7 +93,11 @@ export const getUserLinks = asyncHandler(
   },
 );
 
-export const deleteLink = asyncHandler(
+/**
+ * Delete use link controller
+ * delete /:linkId
+ */
+export const deleteLinkController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
     const userId = req.userId;
 

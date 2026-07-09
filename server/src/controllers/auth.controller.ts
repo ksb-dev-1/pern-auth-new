@@ -14,7 +14,10 @@ import {
 } from "../validation/auth.js";
 import { validate } from "../validation/validation.js";
 
-// ---------- Signup ----------
+/**
+ * Sign up controller
+ * POST /signup
+ */
 export const signupController = asyncHandler(
   async (req: Request, res: Response) => {
     const { email, password, name } = validate(signupSchema, req.body);
@@ -27,7 +30,10 @@ export const signupController = asyncHandler(
   },
 );
 
-// ---------- Verify Email ----------
+/**
+ * Verify email controller
+ * GET /verify-email
+ */
 export const verifyEmailController = asyncHandler(
   async (req: Request, res: Response) => {
     const { token } = req.query;
@@ -44,7 +50,10 @@ export const verifyEmailController = asyncHandler(
   },
 );
 
-// ---------- Signin ----------
+/**
+ * Sign in controller
+ * POST /signin
+ */
 export const signinController = asyncHandler(
   async (req: Request, res: Response) => {
     const { email, password } = validate(signinSchema, req.body);
@@ -80,7 +89,10 @@ export const signinController = asyncHandler(
   },
 );
 
-// ---------- Refresh Token ----------
+/**
+ * Refresh token controller
+ * POST /refresh
+ */
 export const refreshTokenController = asyncHandler(
   async (req: Request, res: Response) => {
     const refreshToken = req.cookies?.refreshToken;
@@ -114,7 +126,10 @@ export const refreshTokenController = asyncHandler(
   },
 );
 
-// ---------- Logout ----------
+/**
+ * Logout controller
+ * POST /logout
+ */
 export const logoutController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
     const userId = req.userId!;
@@ -131,7 +146,10 @@ export const logoutController = asyncHandler(
   },
 );
 
-// ---------- Forgot Password ----------
+/**
+ * Forgot password controller
+ * POST /forgot-password
+ */
 export const forgotPasswordController = asyncHandler(
   async (req: Request, res: Response) => {
     const { email } = validate(forgotPasswordSchema, req.body);
@@ -144,7 +162,10 @@ export const forgotPasswordController = asyncHandler(
   },
 );
 
-// ---------- Reset Password ----------
+/**
+ * Reset password controller
+ * POST /reset-password
+ */
 export const resetPasswordController = asyncHandler(
   async (req: Request, res: Response) => {
     const { token, newPassword } = validate(resetPasswordSchema, req.body);
@@ -155,7 +176,10 @@ export const resetPasswordController = asyncHandler(
   },
 );
 
-// ---------- Resend Verification Email ----------
+/**
+ * Resend verification email controller
+ * POST /resend-verification
+ */
 export const resendVerificationEmailController = asyncHandler(
   async (req: Request, res: Response) => {
     const { email } = validate(resendVerificationSchema, req.body);

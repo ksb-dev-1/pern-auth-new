@@ -8,8 +8,11 @@ import { ApiError } from "../utils/errors.js";
 import { updateProfileSchema } from "../validation/auth.js";
 import { validate } from "../validation/validation.js";
 
-// ---------- Get Profile ----------
-export const getProfile = asyncHandler(async function (
+/**
+ * Get user profileL
+ * GET /profile
+ */
+export const getProfileController = asyncHandler(async function (
   req: AuthRequest,
   res: Response,
 ) {
@@ -20,8 +23,11 @@ export const getProfile = asyncHandler(async function (
   res.status(StatusCodes.OK).json(user);
 });
 
-// ---------- Update Profile ----------
-export const updateProfile = asyncHandler(
+/**
+ * Update user profile
+ * PUT /profile
+ */
+export const updateProfileController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
     const userId = req.userId;
 

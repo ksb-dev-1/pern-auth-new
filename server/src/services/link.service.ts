@@ -9,9 +9,7 @@ import { logger } from "../utils/logger.js";
 
 const SHORT_CODE_LENGTH = 6;
 
-/**
- * Generate a unique short code (with collision retry)
- */
+// Generate a unique short code (with collision retry)
 async function generateUniqueShortCode(): Promise<string> {
   for (let attempt = 1; attempt <= 3; attempt++) {
     const code = nanoid(SHORT_CODE_LENGTH);
@@ -35,10 +33,11 @@ async function generateUniqueShortCode(): Promise<string> {
   );
 }
 
-/**
- * Create a new short link for a user
- */
-export async function createShortLink(userId: string, originalUrl: string) {
+// ----- Create short link service -----
+export async function createShortLinkService(
+  userId: string,
+  originalUrl: string,
+) {
   // Validate URL format
   try {
     new URL(originalUrl);
@@ -68,11 +67,11 @@ export async function createShortLink(userId: string, originalUrl: string) {
       "Failed to create short link",
     );
   }
-
   return newLink;
 }
 
-export async function getLinkByShortCode(shortCode: string) {
+// ----- Get link by short code service -----
+export async function getLinkByShortCodeService(shortCode: string) {
   const [link] = await db
     .select({
       id: links.id,
@@ -89,6 +88,7 @@ export async function getLinkByShortCode(shortCode: string) {
   return link;
 }
 
+// ----- Icrement link clicks service -----
 export async function incrementClicks(linkId: string) {
   await db
     .update(links)
@@ -96,7 +96,8 @@ export async function incrementClicks(linkId: string) {
     .where(eq(links.id, linkId));
 }
 
-export async function getUserLinks(
+// ----- Get user links service -----
+export async function getUserLinksService(
   userId: string,
   limit: number = 10,
   offset: number = 0,
@@ -116,6 +117,7 @@ export async function getUserLinks(
     .offset(offset);
 }
 
+// ----- Get total counts service -----
 export async function getTotalLinksCount(userId: string) {
   const result = await db
     .select({ count: sql<number>`count(*)` })
@@ -124,6 +126,7 @@ export async function getTotalLinksCount(userId: string) {
   return Number(result[0]?.count ?? 0);
 }
 
+// ----- Delete link by ID service -----
 export async function deleteLinkById(linkId: string, userId: string) {
   const [deletedLink] = await db
     .delete(links)

@@ -17,7 +17,7 @@ import {
 import { ApiError } from "../utils/errors.js";
 import { logger } from "../utils/logger.js";
 
-// ---------- Signup ----------
+// ---------- Sign up service ----------
 export async function signupService(
   email: string,
   password: string,
@@ -56,7 +56,7 @@ export async function signupService(
   return { userId: newUser?.id };
 }
 
-// ---------- Verify Email ----------
+// ---------- Verify email service ----------
 export async function verifyEmailService(token: string) {
   const tokenHash = hashToken(token);
 
@@ -92,7 +92,7 @@ export async function verifyEmailService(token: string) {
     .where(eq(users.id, user.id));
 }
 
-// ---------- Signin ----------
+// ---------- Sign in service ----------
 export async function signinService(
   email: string,
   password: string,
@@ -141,7 +141,7 @@ export async function signinService(
   };
 }
 
-// ---------- Refresh Tokens (Rotation) ----------
+// ---------- Refresh token (Rotation) service ----------
 export async function refreshTokensService(
   refreshTokenPlain: string,
   device?: string,
@@ -209,7 +209,7 @@ export async function refreshTokensService(
   };
 }
 
-// ---------- Logout (revoke specific session) ----------
+// ---------- Logout (revoke specific session) service ----------
 export async function logoutService(
   userId: string,
   refreshTokenPlain?: string,
@@ -234,7 +234,7 @@ export async function logoutService(
   }
 }
 
-// ---------- Forgot Password ----------
+// ---------- Forgot password service ----------
 export async function forgotPasswordService(email: string) {
   const [user] = await db.select().from(users).where(eq(users.email, email));
 
@@ -258,7 +258,7 @@ export async function forgotPasswordService(email: string) {
   );
 }
 
-// ---------- Reset Password ----------
+// ---------- Reset password service ----------
 export async function resetPasswordService(token: string, newPassword: string) {
   const tokenHash = hashToken(token);
 
@@ -293,7 +293,7 @@ export async function resetPasswordService(token: string, newPassword: string) {
     .where(eq(users.id, user.id));
 }
 
-// ---------- Resend Verification Email ----------
+// ---------- Resend verification email service ----------
 export async function resendVerificationEmailService(email: string) {
   const [user] = await db.select().from(users).where(eq(users.email, email));
 

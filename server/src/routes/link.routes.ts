@@ -1,9 +1,9 @@
 import express from "express";
 
 import {
-  createShortLink,
-  deleteLink,
-  getUserLinks,
+  createShortLinkController,
+  deleteLinkController,
+  getUserLinksController,
 } from "../controllers/link.controller.js";
 import { protect } from "../middlewares/auth.js";
 
@@ -11,8 +11,8 @@ const router = express.Router();
 
 router.use(protect);
 
-router.post("/", createShortLink);
-router.get("/", getUserLinks);
-router.delete("/:linkId", deleteLink);
+router.post("/", createShortLinkController);
+router.get("/", getUserLinksController);
+router.delete("/:linkId", deleteLinkController);
 
 export default router;
