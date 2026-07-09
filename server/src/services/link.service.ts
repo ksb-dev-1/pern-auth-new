@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { StatusCodes } from "http-status-codes";
 import { nanoid } from "nanoid";
 
@@ -70,4 +70,42 @@ export async function createShortLink(userId: string, originalUrl: string) {
   }
 
   return newLink;
+}
+
+export async function getLinkByShortCode(shortCode: string) {
+  const [link] = await db
+    .select({
+      id: links.id,
+      originalUrl: links.originalUrl,
+      clicks: links.clicks,
+    })
+    .from(links)
+    .where(eq(links.shortCode, shortCode))
+    .limit(1);
+
+  if (!link) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "Link not found");
+  }
+  return link;
+}
+
+export async function incrementClicks(linkId: string) {
+  await db
+    .update(links)
+    .set({ clicks: sql`${links.clicks} + 1` })
+    .where(eq(links.id, linkId));
+}
+
+export async function getUserLinks(userId: string) {
+  return db
+    .select({
+      id: links.id,
+      shortCode: links.shortCode,
+      originalUrl: links.originalUrl,
+      clicks: links.clicks,
+      createdAt: links.createdAt,
+    })
+    .from(links)
+    .where(eq(links.userId, userId))
+    .orderBy(desc(links.createdAt));
 }
