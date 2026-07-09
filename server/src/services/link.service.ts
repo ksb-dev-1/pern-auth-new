@@ -96,7 +96,11 @@ export async function incrementClicks(linkId: string) {
     .where(eq(links.id, linkId));
 }
 
-export async function getUserLinks(userId: string) {
+export async function getUserLinks(
+  userId: string,
+  limit: number = 10,
+  offset: number = 0,
+) {
   return db
     .select({
       id: links.id,
@@ -107,7 +111,17 @@ export async function getUserLinks(userId: string) {
     })
     .from(links)
     .where(eq(links.userId, userId))
-    .orderBy(desc(links.createdAt));
+    .orderBy(desc(links.createdAt))
+    .limit(limit)
+    .offset(offset);
+}
+
+export async function getTotalLinksCount(userId: string) {
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(links)
+    .where(eq(links.userId, userId));
+  return Number(result[0]?.count ?? 0);
 }
 
 export async function deleteLinkById(linkId: string, userId: string) {

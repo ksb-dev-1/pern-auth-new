@@ -56,17 +56,32 @@ export const redirectToOriginal = asyncHandler(
 export const getUserLinks = asyncHandler(
   async (req: AuthRequest, res: Response) => {
     const userId = req.userId;
+
     if (!userId) throw new ApiError(StatusCodes.UNAUTHORIZED, "Unauthorized");
 
-    const links = await linkService.getUserLinks(userId);
+    // Parse pagination parameters from query string
+    const limit = Math.min(Number(req.query.limit) || 10, 100); // max 100
+    const offset = Math.max(Number(req.query.offset) || 0, 0);
 
-    // Build short URLs for each
+    const [links, total] = await Promise.all([
+      linkService.getUserLinks(userId, limit, offset),
+      linkService.getTotalLinksCount(userId),
+    ]);
+
     const linksWithShortUrl = links.map((link) => ({
       ...link,
       shortUrl: `${config.baseUrl}/${link.shortCode}`,
     }));
 
-    res.json(linksWithShortUrl);
+    res.json({
+      data: linksWithShortUrl,
+      pagination: {
+        total,
+        limit,
+        offset,
+        hasMore: offset + links.length < total,
+      },
+    });
   },
 );
 
